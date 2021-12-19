@@ -36,11 +36,6 @@ type groupsResponse struct {
 	Groups []responseUserInfo `json:"groups"`
 }
 
-type testResponse struct {
-	Name string `json:"name"` // 用户唯一ID
-	Age  int    `json:"age"`  // 性别
-}
-
 // GetCurrentUserInfoHandle 获取当前登录用户
 func GetCurrentUserInfoHandle(ctx *gin.Context) {
 	// 获取AppKey

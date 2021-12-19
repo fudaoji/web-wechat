@@ -4,6 +4,7 @@ import (
 	"strings"
 	"web-wechat/core"
 	"web-wechat/global"
+	"web-wechat/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,13 +13,14 @@ import (
 func CheckAppKeyIsLoggedInMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		appKey := ctx.Request.Header.Get("AppKey")
-		if exists, _ := utils.array_utils.Contains(global.appKeys, appKey); !exists {
-			core.FailWithMessage("AppKey非法", ctx)
-		}
-		// TODO 从数据库判断AppKey是否存在
-		// 如果不是登录请求，判断AppKey是否有效
+
 		flag := true
-		if !strings.Contains(ctx.Request.RequestURI, "login") {
+		// 判断AppKey是否存在，商业化后根据appkey收费
+		if !checkAppKey(appKey) {
+			core.FailWithMessage("AppKey非法", ctx)
+			flag = false
+		} else if !strings.Contains(ctx.Request.RequestURI, "login") {
+			// 如果不是登录请求，判断AppKey是否有效
 			if err := global.CheckBot(appKey); err != nil {
 				core.FailWithMessage("AppKey预检失败："+err.Error(), ctx)
 				flag = false
@@ -36,8 +38,10 @@ func CheckAppKeyIsLoggedInMiddleware() gin.HandlerFunc {
 func CheckAppKeyExistMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		appKey := ctx.Request.Header.Get("AppKey")
-		if exists, _ := utils.array_utils.Contains(global.appKeys, appKey); !exists {
+		// 判断AppKey是否存在，商业化后根据appkey收费
+		if !checkAppKey(appKey) {
 			core.FailWithMessage("AppKey非法", ctx)
+			ctx.Abort()
 		}
 		// 先判断AppKey是不是传了
 		if len(appKey) < 1 {
@@ -47,4 +51,10 @@ func CheckAppKeyExistMiddleware() gin.HandlerFunc {
 			ctx.Next()
 		}
 	}
+}
+
+//TODO 从数据库判断AppKey是否存在
+func checkAppKey(appKey string) bool {
+	exists, _ := utils.ContainsStr(global.AppKeys, appKey)
+	return exists
 }

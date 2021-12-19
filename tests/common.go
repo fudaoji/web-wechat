@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	APPKEY  = "3156"
+	APPKEY  = "15659827559"
 	APIHOST = "http://127.0.0.1:8888"
 )
 
@@ -24,8 +24,14 @@ var (
 		"msgToUser":      APIHOST + "/message/user",
 		"msgToGroup":     APIHOST + "/message/group",
 	}
-	Uuid = "YaW_Qwx3PA=="
+	Uuid = "oZCDr9Q3yw=="
 )
+
+type Resp struct {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+}
 
 func dealPayload(data interface{}) io.Reader {
 	if data != nil {
@@ -40,7 +46,7 @@ func dealPayload(data interface{}) io.Reader {
 }
 
 //请求封装
-func Request(method string, url string, data interface{}) map[string]interface{} {
+func Request(method string, url string, data interface{}) Resp {
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url+"?uuid="+Uuid, dealPayload(data))
 
@@ -62,7 +68,7 @@ func Request(method string, url string, data interface{}) map[string]interface{}
 		fmt.Println(err)
 	}
 	//fmt.Println(string(body))
-	m := make(map[string]interface{})
+	m := Resp{}
 	if err := json.Unmarshal(body, &m); err != nil {
 		// 处理错误
 		fmt.Println("unmarshal错误:" + err.Error())
