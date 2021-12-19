@@ -1,16 +1,14 @@
 package handler
 
 import (
-	"bytes"
 	"encoding/xml"
 	"fmt"
-	"github.com/eatmoreapple/openwechat"
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"web-wechat/core"
 	"web-wechat/logger"
-	"web-wechat/oss"
+
+	"github.com/eatmoreapple/openwechat"
 )
 
 // ImageMessageData 图片消息结构体
@@ -79,7 +77,7 @@ func imageMessageHandle(ctx *openwechat.MessageContext) {
 		}
 
 		// 上传文件
-		reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
+		/* reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
 		flag := oss.SaveToOss(reader2, contentType, fileName)
 		if flag {
 			fileUrl := fmt.Sprintf("https://%v/%v/%v", core.OssConfig.Endpoint, core.OssConfig.BucketName, fileName)
@@ -87,7 +85,7 @@ func imageMessageHandle(ctx *openwechat.MessageContext) {
 			ctx.Content = fileUrl
 		} else {
 			logger.Log.Error("图片保存失败")
-		}
+		} */
 	}
 	ctx.Next()
 }

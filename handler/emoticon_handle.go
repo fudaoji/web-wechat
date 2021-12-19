@@ -1,16 +1,14 @@
 package handler
 
 import (
-	"bytes"
 	"encoding/xml"
 	"fmt"
-	"github.com/eatmoreapple/openwechat"
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"web-wechat/core"
 	"web-wechat/logger"
-	"web-wechat/oss"
+
+	"github.com/eatmoreapple/openwechat"
 )
 
 // EmoticonMessageData 表情包消息结构体
@@ -98,7 +96,7 @@ func emoticonMessageHandle(ctx *openwechat.MessageContext) {
 					fileName = fmt.Sprintf("%v/%v", uin, fileName)
 				}
 				// 上传文件(reader2解决上传空文件的BUG,因为http.Response.Body只允许读一次)
-				reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
+				/* reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
 				flag := oss.SaveToOss(reader2, contentType, fileName)
 				if flag {
 					fileUrl := fmt.Sprintf("https://%v/%v/%v", core.OssConfig.Endpoint, core.OssConfig.BucketName, fileName)
@@ -106,7 +104,7 @@ func emoticonMessageHandle(ctx *openwechat.MessageContext) {
 					ctx.Content = fileUrl
 				} else {
 					logger.Log.Error("表情包保存失败")
-				}
+				} */
 			}
 		}
 	}

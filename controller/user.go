@@ -1,11 +1,12 @@
 package controller
 
 import (
-	"github.com/eatmoreapple/openwechat"
-	"github.com/gin-gonic/gin"
 	"web-wechat/core"
 	"web-wechat/global"
 	"web-wechat/logger"
+
+	"github.com/eatmoreapple/openwechat"
+	"github.com/gin-gonic/gin"
 )
 
 // 返回用户信息包装类
@@ -27,7 +28,17 @@ type responseUserInfo struct {
 type friendsResponse struct {
 	Count   int                `json:"count"`
 	Friends []responseUserInfo `json:"friends"`
-	Groups  []responseUserInfo `json:"groups"`
+}
+
+// 返回的群聊列表的实体
+type groupsResponse struct {
+	Count  int                `json:"count"`
+	Groups []responseUserInfo `json:"groups"`
+}
+
+type testResponse struct {
+	Name string `json:"name"` // 用户唯一ID
+	Age  int    `json:"age"`  // 性别
 }
 
 // GetCurrentUserInfoHandle 获取当前登录用户
@@ -72,12 +83,6 @@ func GetFriendsListHandle(ctx *gin.Context) {
 		return
 	}
 
-	groups, err := user.Groups(true)
-	if err != nil {
-		core.FailWithMessage("获取群聊列表失败", ctx)
-		return
-	}
-
 	// 循环处理数据
 	var friendList []responseUserInfo
 	for _, friend := range friends {
@@ -95,11 +100,31 @@ func GetFriendsListHandle(ctx *gin.Context) {
 		})
 	}
 
+	// 返回给前端
+	core.OkWithData(friendsResponse{Count: friends.Count(), Friends: friendList}, ctx)
+}
+
+// GetGroupsListHandle 获取群聊列表
+func GetGroupsListHandle(ctx *gin.Context) {
+	// 获取AppKey
+	appKey := ctx.Request.Header.Get("AppKey")
+
+	bot := global.GetBot(appKey)
+	// 获取好友列表
+	user, _ := bot.GetCurrentUser()
+
+	groups, err := user.Groups(true)
+	if err != nil {
+		core.FailWithMessage("获取群聊列表失败", ctx)
+		return
+	}
+
+	logger.Log.Infof("%v", groups)
 	// 循环处理数据
 	var groupList []responseUserInfo
 	for _, group := range groups {
 		// 取出群成员
-		members, _ := group.Members()
+		//members, _ := group.Members()
 		groupList = append(groupList, responseUserInfo{
 			Uin:         group.Uin,
 			Sex:         group.Sex,
@@ -111,10 +136,10 @@ func GetFriendsListHandle(ctx *gin.Context) {
 			RemarkName:  group.RemarkName,
 			HeadImgUrl:  group.HeadImgUrl,
 			UserName:    group.UserName,
-			Members:     members,
+			//Members:     members,
 		})
 	}
 
 	// 返回给前端
-	core.OkWithData(friendsResponse{Count: friends.Count(), Friends: friendList, Groups: groupList}, ctx)
+	core.OkWithData(groupsResponse{Count: groups.Count(), Groups: groupList}, ctx)
 }

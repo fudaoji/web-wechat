@@ -1,8 +1,9 @@
 package route
 
 import (
-	"github.com/gin-gonic/gin"
 	"web-wechat/controller"
+
+	"github.com/gin-gonic/gin"
 )
 
 // initUserRoute 初始化登录路由信息
@@ -13,4 +14,6 @@ func initUserRoute(app *gin.Engine) {
 	group.GET("/info", controller.GetCurrentUserInfoHandle)
 	// 获取好友列表
 	group.GET("/friends", controller.GetFriendsListHandle)
+	// 获取群组列表
+	group.GET("/groups", controller.GetGroupsListHandle)
 }

@@ -12,8 +12,8 @@ import (
 func CheckAppKeyIsLoggedInMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		appKey := ctx.Request.Header.Get("AppKey")
-		if len(appKey) == 0 {
-			appKey = ctx.Query("AppKey")
+		if exists, _ := utils.array_utils.Contains(global.appKeys, appKey); !exists {
+			core.FailWithMessage("AppKey非法", ctx)
 		}
 		// TODO 从数据库判断AppKey是否存在
 		// 如果不是登录请求，判断AppKey是否有效
@@ -36,8 +36,8 @@ func CheckAppKeyIsLoggedInMiddleware() gin.HandlerFunc {
 func CheckAppKeyExistMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		appKey := ctx.Request.Header.Get("AppKey")
-		if len(appKey) == 0 {
-			appKey = ctx.Query("AppKey")
+		if exists, _ := utils.array_utils.Contains(global.appKeys, appKey); !exists {
+			core.FailWithMessage("AppKey非法", ctx)
 		}
 		// 先判断AppKey是不是传了
 		if len(appKey) < 1 {

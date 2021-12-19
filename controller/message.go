@@ -1,14 +1,15 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"web-wechat/core"
 	"web-wechat/global"
+
+	"github.com/gin-gonic/gin"
 )
 
 // 发送消息请求体
 type sendMsgRes struct {
-	// 送达人UserName
+	// 送达人RemarkName,因为NickName和UserName的确定性无法保证，而RemarkName设置好可以做到自己不去更改
 	To string `form:"to" json:"to"`
 	// 消息类型
 	Type int `form:"type" json:"type"`
@@ -33,7 +34,7 @@ func SendMessageToUser(ctx *gin.Context) {
 	// 查找指定的好友
 	friends, _ := self.Friends(true)
 	// 查询指定好友
-	friendSearchResult := friends.SearchByUserName(1, res.To)
+	friendSearchResult := friends.SearchByRemarkName(1, res.To)
 	if friendSearchResult.Count() < 1 {
 		core.FailWithMessage("指定好友不存在", ctx)
 		return
@@ -69,7 +70,7 @@ func SendMessageToGroup(ctx *gin.Context) {
 		return
 	}
 	// 判断指定群组是否存在
-	search := groups.SearchByUserName(1, res.To)
+	search := groups.SearchByRemarkName(1, res.To)
 	if search.Count() < 1 {
 		core.FailWithMessage("指定群组不存在", ctx)
 		return
