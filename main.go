@@ -1,13 +1,16 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"web-wechat/core"
+
+	"github.com/gin-gonic/gin"
+
 	. "web-wechat/db"
 	"web-wechat/global"
 	"web-wechat/logger"
 	"web-wechat/middleware"
-	"web-wechat/oss"
+
+	//"web-wechat/oss"
 	"web-wechat/route"
 )
 
@@ -29,10 +32,10 @@ func main() {
 	global.InitWechatBotsMap()
 
 	// 初始化OSS
-	oss.InitOssConnHandle()
+	//oss.InitOssConnHandle()
 
 	// 初始化MongoDB
-	InitMongoConnHandle()
+	//InitMongoConnHandle()
 
 	// 初始化Redis连接
 	InitRedisConnHandle()
@@ -44,7 +47,7 @@ func main() {
 	global.UpdateHotLoginData()
 
 	// 保活
-	//global.KeepAliveHandle()
+	global.KeepAliveHandle()
 
 	// 监听端口
 	_ = app.Run(":8888")

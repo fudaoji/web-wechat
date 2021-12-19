@@ -1,6 +1,6 @@
 module web-wechat
 
-go 1.17
+go 1.16
 
 require (
 	github.com/eatmoreapple/openwechat v1.0.8

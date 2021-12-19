@@ -21,7 +21,7 @@ func HandleMessage(bot *openwechat.Bot) {
 	// APP消息处理
 	dispatcher.OnMedia(appMessageHandle)
 	// 保存消息
-	dispatcher.RegisterHandler(checkNeedSave, saveToDb)
+	//dispatcher.RegisterHandler(checkNeedSave, saveToDb)
 	// 未定义消息处理
 	dispatcher.RegisterHandler(checkIsOther, otherMessageHandle)
 

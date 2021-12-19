@@ -2,8 +2,9 @@ package handler
 
 import (
 	"fmt"
-	"github.com/eatmoreapple/openwechat"
 	"web-wechat/logger"
+
+	"github.com/eatmoreapple/openwechat"
 )
 
 // 处理文本消息
@@ -17,6 +18,16 @@ func textMessageHandle(ctx *openwechat.MessageContext) {
 	}
 
 	logger.Log.Infof("[收到新文字消息] == 发信人：%v ==> 内容：%v", senderUser, ctx.Content)
+	msg := ctx.Message
+	bot := ctx.Bot
+	if senderUser == "傅道集" && msg.Content == "ping" {
+		msg.ReplyText("pong")
+	}
+
+	user, _ := bot.GetCurrentUser()
+	groups, _ := user.Groups()
+	logger.Log.Infof("%v", groups)
+
 	//if !ctx.IsSendBySelf() {
 	//	sender, _ := ctx.Sender()
 	//	if ctx.IsSendByGroup() {

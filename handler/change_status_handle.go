@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"github.com/eatmoreapple/openwechat"
 	"web-wechat/logger"
+
+	"github.com/eatmoreapple/openwechat"
 )
 
 func checkIsCanRead(message *openwechat.Message) bool {

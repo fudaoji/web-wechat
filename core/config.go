@@ -53,7 +53,7 @@ func (c mongoConfig) GetClientUri() string {
 // InitRedisConfig 初始化Redis配置
 func InitRedisConfig() {
 	// RedisHost Redis主机
-	host := utils.GetEnvVal("REDIS_HOST", "wechat_redis")
+	host := utils.GetEnvVal("REDIS_HOST", "127.0.0.1")
 	// RedisPort Redis端口
 	port := utils.GetEnvVal("REDIS_PORT", "6379")
 	// RedisPassword Redis密码
