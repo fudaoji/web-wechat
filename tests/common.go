@@ -11,7 +11,7 @@ import (
 
 const (
 	APPKEY  = "15659827559"
-	APIHOST = "http://127.0.0.1:8888"
+	APIHOST = "http://127.0.0.1:8889"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
 		"msgToUser":      APIHOST + "/message/user",
 		"msgToGroup":     APIHOST + "/message/group",
 	}
-	Uuid = "oZCDr9Q3yw=="
+	Uuid = "IdV4r60TJA=="
 )
 
 type Resp struct {
@@ -67,7 +67,7 @@ func Request(method string, url string, data interface{}) Resp {
 		// 处理错误
 		fmt.Println(err)
 	}
-	//fmt.Println(string(body))
+	fmt.Println(string(body))
 	m := Resp{}
 	if err := json.Unmarshal(body, &m); err != nil {
 		// 处理错误
