@@ -42,9 +42,7 @@ func CheckAppKeyExistMiddleware() gin.HandlerFunc {
 		if !checkAppKey(appKey) {
 			core.FailWithMessage("AppKey非法", ctx)
 			ctx.Abort()
-		}
-		// 先判断AppKey是不是传了
-		if len(appKey) < 1 {
+		} else if len(appKey) < 1 { // 先判断AppKey是不是传了
 			core.FailWithMessage("AppKey为必传参数", ctx)
 			ctx.Abort()
 		} else {
