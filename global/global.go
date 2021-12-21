@@ -9,6 +9,6 @@ var (
 	wechatBots map[string]*protocol.WechatBot
 	//appKey白名单
 	AppKeys = []string{
-		"15659827559",
+		"15659827559", "18659253156", "111111", "222222",
 	}
 )

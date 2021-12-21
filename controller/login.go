@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"github.com/eatmoreapple/openwechat"
-	"github.com/gin-gonic/gin"
 	"web-wechat/core"
 	"web-wechat/global"
 	"web-wechat/logger"
 	"web-wechat/protocol"
+
+	"github.com/eatmoreapple/openwechat"
+	"github.com/gin-gonic/gin"
 )
 
 // 获取登录URL返回结构体
@@ -80,5 +81,18 @@ func LoginHandle(ctx *gin.Context) {
 		return
 	}
 	logger.Log.Infof("当前登录用户：%v", user.NickName)
-	core.OkWithMessage("登录成功", ctx)
+	userDataVO := responseUserInfo{
+		Uin:         user.Uin,
+		Sex:         user.Sex,
+		Province:    user.Province,
+		City:        user.City,
+		Alias:       user.Alias,
+		DisplayName: user.DisplayName,
+		NickName:    user.NickName,
+		RemarkName:  user.RemarkName,
+		HeadImgUrl:  user.HeadImgUrl,
+		UserName:    user.UserName,
+	}
+	core.OkWithData(userDataVO, ctx)
+	//core.OkWithMessage("登录成功", ctx)
 }
