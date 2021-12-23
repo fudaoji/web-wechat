@@ -4,8 +4,8 @@ redis:
   pwd: 
   db: 0
 db:
-  host: 127.0.0.1
+  host: 172.17.0.12
   database: bot
-  username: root
-  password: 123456
+  username: dev
+  password: dev@kuryun
   port: 3306
