@@ -16,4 +16,6 @@ func initUserRoute(app *gin.Engine) {
 	group.GET("/friends", controller.GetFriendsListHandle)
 	// 获取群组列表
 	group.GET("/groups", controller.GetGroupsListHandle)
+	// 修改好友备注
+	group.POST("/setfriendremarkname", controller.SetFriendRemarkNameHandle)
 }

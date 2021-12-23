@@ -1,8 +1,11 @@
 package core
 
 import (
+	"flag"
 	"fmt"
 	"web-wechat/utils"
+
+	"github.com/spf13/viper"
 )
 
 // RedisConfig Redis配置
@@ -51,15 +54,43 @@ func (c mongoConfig) GetClientUri() string {
 }
 
 // InitRedisConfig 初始化Redis配置
+func InitMysqlConfig() {
+	// Mysql配置
+	//主机
+	host := string(getVal("db.host", "127.0.0.1"))
+	// 端口
+	port := getVal("db.port", "3306")
+	// 密码
+	password := getVal("db.password", "")
+	// 数据库
+	database := getVal("db.database", "test")
+
+	//用户名
+	username := getVal("db.username", "root")
+
+	MySQLConfig = mysqlConfig{
+		Host:     host,
+		Port:     port,
+		Password: password,
+		Username: username,
+		DbName:   database,
+	}
+}
+
+// InitRedisConfig 初始化Redis配置
 func InitRedisConfig() {
 	// RedisHost Redis主机
-	host := utils.GetEnvVal("REDIS_HOST", "127.0.0.1")
+	//host := utils.GetEnvVal("REDIS_HOST", "127.0.0.1")
+	host := string(getVal("redis.host", "127.0.0.1"))
 	// RedisPort Redis端口
-	port := utils.GetEnvVal("REDIS_PORT", "6379")
+	//port := utils.GetEnvVal("REDIS_PORT", "6379")
+	port := getVal("redis.port", "6379")
 	// RedisPassword Redis密码
-	password := utils.GetEnvVal("REDIS_PWD", "")
+	//password := utils.GetEnvVal("REDIS_PWD", "")
+	password := getVal("redis.pwd", "")
 	// Redis库
-	db := utils.GetEnvIntVal("REDIS_DB", 0)
+	//db := utils.GetEnvIntVal("REDIS_DB", 0)
+	db := getIntVal("redis.db", 0)
 
 	RedisConfig = redisConfig{
 		Host:     host,
@@ -95,4 +126,27 @@ func InitMongoConfig() {
 	dbName := utils.GetEnvVal("MONGO_DB", "web-wechat")
 
 	MongoDbConfig = mongoConfig{host, port, user, password, dbName}
+}
+
+//InitConfig 读取配置文件
+func InitConfig() {
+	mode := flag.String("mode", "dev", "dev mode")
+	flag.Parse()
+	viper.SetConfigFile(fmt.Sprintf("./setting_%s.yaml", *mode))
+}
+
+//getVal 获取配置文件的字符串配置值
+func getVal(key string, defaultVal string) string {
+	if viper.IsSet(key) {
+		return viper.GetString(key)
+	}
+	return defaultVal
+}
+
+//getVal 获取配置文件的整形配置值
+func getIntVal(key string, defaultVal int) int {
+	if viper.IsSet(key) {
+		return viper.GetInt(key)
+	}
+	return defaultVal
 }

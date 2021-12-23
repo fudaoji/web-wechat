@@ -16,15 +16,16 @@ const (
 
 var (
 	Apis = map[string]string{
-		"getlogincode":   APIHOST + "/getlogincode",
-		"checklogin":     APIHOST + "/checklogin",
-		"getcurrentuser": APIHOST + "/user/info",
-		"listfriends":    APIHOST + "/user/friends",
-		"listgroups":     APIHOST + "/user/groups",
-		"msgToUser":      APIHOST + "/message/user",
-		"msgToGroup":     APIHOST + "/message/group",
+		"getlogincode":        APIHOST + "/getlogincode",
+		"checklogin":          APIHOST + "/checklogin",
+		"getcurrentuser":      APIHOST + "/user/info",
+		"listfriends":         APIHOST + "/user/friends",
+		"listgroups":          APIHOST + "/user/groups",
+		"msgToUser":           APIHOST + "/message/user",
+		"msgToGroup":          APIHOST + "/message/group",
+		"setfriendremarkname": APIHOST + "/user/setfriendremarkname",
 	}
-	Uuid = "IbNuqYVV3Q=="
+	Uuid = "4dNYheLRiA=="
 )
 
 type Resp struct {
@@ -67,7 +68,7 @@ func Request(method string, url string, data interface{}) Resp {
 		// 处理错误
 		fmt.Println(err)
 	}
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 	m := Resp{}
 	if err := json.Unmarshal(body, &m); err != nil {
 		// 处理错误

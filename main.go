@@ -31,6 +31,9 @@ func main() {
 	// 初始化WechatBotMap
 	global.InitWechatBotsMap()
 
+	//读取配置
+	core.InitConfig()
+
 	// 初始化OSS
 	//oss.InitOssConnHandle()
 
