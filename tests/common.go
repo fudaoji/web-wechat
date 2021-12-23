@@ -25,7 +25,7 @@ var (
 		"msgToGroup":          APIHOST + "/message/group",
 		"setfriendremarkname": APIHOST + "/user/setfriendremarkname",
 	}
-	Uuid = "4dNYheLRiA=="
+	Uuid = "wecz_3843A=="
 )
 
 type Resp struct {

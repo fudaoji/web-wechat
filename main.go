@@ -37,8 +37,8 @@ func main() {
 	// 初始化OSS
 	//oss.InitOssConnHandle()
 
-	// 初始化MongoDB
-	//InitMongoConnHandle()
+	// 初始化MysqlDB
+	InitMysqlConnHandle()
 
 	// 初始化Redis连接
 	InitRedisConnHandle()

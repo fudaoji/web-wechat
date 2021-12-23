@@ -2,9 +2,11 @@ package middleware
 
 import (
 	"strings"
+	"time"
 	"web-wechat/core"
 	"web-wechat/global"
-	"web-wechat/utils"
+
+	"web-wechat/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +19,7 @@ func CheckAppKeyIsLoggedInMiddleware() gin.HandlerFunc {
 		flag := true
 		// 判断AppKey是否存在，商业化后根据appkey收费
 		if !checkAppKey(appKey) {
-			core.FailWithMessage("AppKey非法", ctx)
+			core.FailWithMessage("AppKey非法或已过期", ctx)
 			flag = false
 		} else if !strings.Contains(ctx.Request.RequestURI, "login") {
 			// 如果不是登录请求，判断AppKey是否有效
@@ -40,7 +42,7 @@ func CheckAppKeyExistMiddleware() gin.HandlerFunc {
 		appKey := ctx.Request.Header.Get("AppKey")
 		// 判断AppKey是否存在，商业化后根据appkey收费
 		if !checkAppKey(appKey) {
-			core.FailWithMessage("AppKey非法", ctx)
+			core.FailWithMessage("AppKey非法或已过期", ctx)
 			ctx.Abort()
 		} else if len(appKey) < 1 { // 先判断AppKey是不是传了
 			core.FailWithMessage("AppKey为必传参数", ctx)
@@ -51,8 +53,11 @@ func CheckAppKeyExistMiddleware() gin.HandlerFunc {
 	}
 }
 
-//TODO 从数据库判断AppKey是否存在
+//验证AppKey是否存在且未过期
 func checkAppKey(appKey string) bool {
-	exists, _ := utils.ContainsStr(global.AppKeys, appKey)
-	return exists
+	//exists, _ := utils.ContainsStr(global.AppKeys, appKey)
+	//return exists
+	var key = model.Appkey{Appkey: appKey}
+	key.FindByAppkey()
+	return key.Deadline > time.Now().Unix()
 }
