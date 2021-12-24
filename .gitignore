@@ -5,3 +5,4 @@ logs
 tmp
 main
 go.sum
+setting_prod.yaml
