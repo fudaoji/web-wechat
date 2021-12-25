@@ -17,8 +17,8 @@ type sendMsgRes struct {
 	Content string `form:"content" json:"content"`
 }
 
-// SendMessageToUser 向指定用户发消息
-func SendMessageToUser(ctx *gin.Context) {
+// SendTextToFriend 向指定用户发消息
+func SendTextToFriend(ctx *gin.Context) {
 	// 取出请求参数
 	var res sendMsgRes
 	if err := ctx.ShouldBindJSON(&res); err != nil {
@@ -34,7 +34,7 @@ func SendMessageToUser(ctx *gin.Context) {
 	// 查找指定的好友
 	friends, _ := self.Friends(true)
 	// 查询指定好友
-	friendSearchResult := friends.SearchByRemarkName(1, res.To)
+	friendSearchResult := friends.SearchByUserName(1, res.To)
 	if friendSearchResult.Count() < 1 {
 		core.FailWithMessage("指定好友不存在", ctx)
 		return
@@ -43,14 +43,14 @@ func SendMessageToUser(ctx *gin.Context) {
 	friend := friendSearchResult.First()
 	// 发送消息
 	if _, err := friend.SendText(res.Content); err != nil {
-		core.FailWithMessage("消息发送失败："+err.Error(), ctx)
+		core.FailWithMessage(err.Error(), ctx)
 		return
 	}
 	core.Ok(ctx)
 }
 
-// SendMessageToGroup 向指定群组发送消息
-func SendMessageToGroup(ctx *gin.Context) {
+// SendTextToGroup 向指定群组发送消息
+func SendTextToGroup(ctx *gin.Context) {
 	// 取出请求参数
 	var res sendMsgRes
 	if err := ctx.ShouldBindJSON(&res); err != nil {
@@ -70,7 +70,7 @@ func SendMessageToGroup(ctx *gin.Context) {
 		return
 	}
 	// 判断指定群组是否存在
-	search := groups.SearchByRemarkName(1, res.To)
+	search := groups.SearchByUserName(1, res.To)
 	if search.Count() < 1 {
 		core.FailWithMessage("指定群组不存在", ctx)
 		return
@@ -79,7 +79,7 @@ func SendMessageToGroup(ctx *gin.Context) {
 	group := search.First()
 	// 发送消息
 	if _, err := group.SendText(res.Content); err != nil {
-		core.FailWithMessage("消息发送失败："+err.Error(), ctx)
+		core.FailWithMessage(err.Error(), ctx)
 		return
 	}
 	core.Ok(ctx)
