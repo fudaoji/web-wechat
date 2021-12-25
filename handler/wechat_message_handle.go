@@ -49,7 +49,7 @@ func NotifyWebhook(bot *openwechat.Bot, data *CallbackRes) {
 	appkeyRecord.FindByUin()
 	if len(appkeyRecord.Webhook) > 0 {
 		url := appkeyRecord.Webhook
-		data.Appkey = appkeyRecord.AppKey
+		data.Appkey = appkeyRecord.Appkey
 		ReqPostJson(url, data, nil)
 	} else {
 		fmt.Println("未填写webhook")
