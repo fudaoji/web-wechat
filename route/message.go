@@ -11,7 +11,7 @@ func initMessageRoute(app *gin.Engine) {
 	group := app.Group("/message")
 
 	// 向指定好友发送消息
-	group.PUT("/user", controller.SendTextToFriend)
+	group.POST("/user", controller.SendTextToFriend)
 
 	// 向指定群组发送消息
 	group.PUT("/group", controller.SendTextToGroup)
