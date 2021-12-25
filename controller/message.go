@@ -9,10 +9,10 @@ import (
 
 // 发送消息请求体
 type sendMsgRes struct {
-	// 送达人RemarkName,因为NickName和UserName的确定性无法保证，而RemarkName设置好可以做到自己不去更改
+	// username
 	To string `form:"to" json:"to"`
 	// 消息类型
-	Type int `form:"type" json:"type"`
+	Type string `form:"type" json:"type"`
 	// 正文
 	Content string `form:"content" json:"content"`
 }
