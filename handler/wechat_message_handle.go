@@ -10,6 +10,7 @@ import (
 
 // 回调请求体
 type CallbackRes struct {
+	Appkey  string      `form:"appkey" json:"appkey"`
 	From    string      `form:"from" json:"from"`
 	Type    string      `form:"type" json:"type"`
 	Content interface{} `form:"content" json:"content"`
@@ -46,9 +47,9 @@ func NotifyWebhook(bot *openwechat.Bot, data *CallbackRes) {
 	user, _ := bot.GetCurrentUser()
 	appkeyRecord := model.Appkey{Uin: user.Uin}
 	appkeyRecord.FindByUin()
-	fmt.Printf("uin[%v]", user.Uin)
 	if len(appkeyRecord.Webhook) > 0 {
 		url := appkeyRecord.Webhook
+		data.Appkey = appkeyRecord.AppKey
 		ReqPostJson(url, data, nil)
 	} else {
 		fmt.Println("未填写webhook")
