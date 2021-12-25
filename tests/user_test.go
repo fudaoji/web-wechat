@@ -15,7 +15,7 @@ type setRemarkNameRes struct {
 
 func TestSetFriendRemarkName(t *testing.T) {
 	method, url := "POST", Apis["setfriendremarkname"]
-	res := Request(method, url, setRemarkNameRes{To: "@59d722cbf25d962039d0239dec951c96f7df2ad79a196ed4b561140d6161c3a8", RemarkName: "傅道集"})
+	res := Request(method, url, &setRemarkNameRes{To: "@59d722cbf25d962039d0239dec951c96f7df2ad79a196ed4b561140d6161c3a8", RemarkName: "傅道集"})
 	fmt.Printf("%#v", res)
 }
 

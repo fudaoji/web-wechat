@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	. "github.com/eatmoreapple/openwechat"
 	"net/url"
 	. "web-wechat/db"
 	"web-wechat/logger"
+
+	. "github.com/eatmoreapple/openwechat"
 )
 
 type WechatBot struct {

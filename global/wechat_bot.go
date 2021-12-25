@@ -3,13 +3,14 @@ package global
 import (
 	"encoding/json"
 	"errors"
-	"github.com/eatmoreapple/openwechat"
-	"github.com/robfig/cron"
 	"time"
 	. "web-wechat/db"
 	"web-wechat/handler"
 	"web-wechat/logger"
 	"web-wechat/protocol"
+
+	"github.com/eatmoreapple/openwechat"
+	"github.com/robfig/cron"
 )
 
 // InitWechatBotsMap 初始化WechatBots

@@ -4,6 +4,7 @@ import (
 	"web-wechat/core"
 	"web-wechat/global"
 	"web-wechat/logger"
+	"web-wechat/model"
 	"web-wechat/protocol"
 
 	"github.com/eatmoreapple/openwechat"
@@ -14,6 +15,12 @@ import (
 type loginUrlResponse struct {
 	Uuid string `json:"uuid"`
 	Url  string `json:"url"`
+}
+
+// 登录请求体
+type loginRes struct {
+	// 回调地址
+	Webhook string `form:"webhook" json:"webhook"`
 }
 
 // GetLoginUrlHandle 获取登录扫码连接
@@ -79,6 +86,14 @@ func LoginHandle(ctx *gin.Context) {
 		logger.Log.Errorf("获取登录用户信息失败: %v", err.Error())
 		core.FailWithMessage("获取登录用户信息失败："+err.Error(), ctx)
 		return
+	} else {
+		//webhook和uin入库
+		var resData loginRes
+		err := ctx.ShouldBindJSON(&resData)
+		if err == nil && len(resData.Webhook) > 0 {
+			logger.Log.Infof("保存webhook[%v]", resData.Webhook)
+			model.UpdateWebhookByAppkey(appKey, resData.Webhook, user.Uin)
+		}
 	}
 	logger.Log.Infof("当前登录用户：%v", user.NickName)
 	userDataVO := responseUserInfo{

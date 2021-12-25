@@ -24,10 +24,13 @@ func InitMysqlConnHandle() {
 		fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=utf8mb4&loc=Local",
 			core.MySQLConfig.Username, core.MySQLConfig.Password, core.MySQLConfig.Host, core.MySQLConfig.Port, core.MySQLConfig.
 				DbName))
-	fmt.Println(core.MySQLConfig)
+
 	if err != nil {
 		panic("failed to connect mysql")
 	}
+	//通过db.SingularTable(true)，gorm会在创建表的时候去掉"s"的后缀
+	db.SingularTable(true)
+
 	logger.Log.Info("MysqlDB连接初始化成功")
 	MysqlClient = mysqlDB{db}
 }

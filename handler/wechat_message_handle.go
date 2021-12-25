@@ -1,8 +1,19 @@
 package handler
 
 import (
+	"fmt"
+	. "web-wechat/core"
+	"web-wechat/model"
+
 	"github.com/eatmoreapple/openwechat"
 )
+
+// 回调请求体
+type CallbackRes struct {
+	From    string      `form:"from" json:"from"`
+	Type    string      `form:"type" json:"type"`
+	Content interface{} `form:"content" json:"content"`
+}
 
 func HandleMessage(bot *openwechat.Bot) {
 	// 定义一个处理器
@@ -27,4 +38,19 @@ func HandleMessage(bot *openwechat.Bot) {
 
 	// 注册消息处理器
 	bot.MessageHandler = openwechat.DispatchMessage(dispatcher)
+}
+
+//NotifyWebhook  通知客户端平台
+func NotifyWebhook(bot *openwechat.Bot, data *CallbackRes) {
+	//uuid, _ := bot.Caller.GetLoginUUID()
+	user, _ := bot.GetCurrentUser()
+	appkeyRecord := model.Appkey{Uin: user.Uin}
+	appkeyRecord.FindByUin()
+	fmt.Printf("uin[%v]", user.Uin)
+	if len(appkeyRecord.Webhook) > 0 {
+		url := appkeyRecord.Webhook
+		ReqPostJson(url, data, nil)
+	} else {
+		fmt.Println("未填写webhook")
+	}
 }
