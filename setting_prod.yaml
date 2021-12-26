@@ -15,3 +15,4 @@ db:
   username: yuelinli
   password: 4tKA$w4tkzB@4ZAq
   port: 3306
+uploadpath: ./uploads/

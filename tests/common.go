@@ -16,16 +16,17 @@ const (
 
 var (
 	Apis = map[string]string{
+		"imgToFriend":         APIHOST + "/message/user/img",
 		"getlogincode":        APIHOST + "/getlogincode",
 		"checklogin":          APIHOST + "/checklogin",
 		"getcurrentuser":      APIHOST + "/user/info",
 		"listfriends":         APIHOST + "/user/friends",
 		"listgroups":          APIHOST + "/user/groups",
-		"msgToUser":           APIHOST + "/message/user",
+		"msgToFriend":         APIHOST + "/message/user",
 		"msgToGroup":          APIHOST + "/message/group",
 		"setfriendremarkname": APIHOST + "/user/setfriendremarkname",
 	}
-	Uuid = "gcdIy-eB2A=="
+	Uuid = "ocUw_-v08w=="
 )
 
 type Resp struct {

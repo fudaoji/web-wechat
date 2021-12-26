@@ -57,15 +57,15 @@ func (c mongoConfig) GetClientUri() string {
 func InitMysqlConfig() {
 	// Mysql配置
 	//主机
-	host := getVal("db.host", "127.0.0.1")
+	host := GetVal("db.host", "127.0.0.1")
 	// 端口
-	port := getVal("db.port", "3306")
+	port := GetVal("db.port", "3306")
 	// 密码
-	password := getVal("db.password", "")
+	password := GetVal("db.password", "")
 	// 数据库
-	database := getVal("db.database", "test")
+	database := GetVal("db.database", "test")
 	//用户名
-	username := getVal("db.username", "root")
+	username := GetVal("db.username", "root")
 
 	MySQLConfig = mysqlConfig{
 		Host:     host,
@@ -80,16 +80,16 @@ func InitMysqlConfig() {
 func InitRedisConfig() {
 	// RedisHost Redis主机
 	//host := utils.GetEnvVal("REDIS_HOST", "127.0.0.1")
-	host := getVal("redis.host", "127.0.0.1")
+	host := GetVal("redis.host", "127.0.0.1")
 	// RedisPort Redis端口
 	//port := utils.GetEnvVal("REDIS_PORT", "6379")
-	port := getVal("redis.port", "6379")
+	port := GetVal("redis.port", "6379")
 	// RedisPassword Redis密码
 	//password := utils.GetEnvVal("REDIS_PWD", "")
-	password := getVal("redis.pwd", "")
+	password := GetVal("redis.pwd", "")
 	// Redis库
 	//db := utils.GetEnvIntVal("REDIS_DB", 0)
-	db := getIntVal("redis.db", 0)
+	db := GetIntVal("redis.db", 0)
 
 	RedisConfig = redisConfig{
 		Host:     host,
@@ -137,16 +137,16 @@ func InitConfig() {
 	}
 }
 
-//getVal 获取配置文件的字符串配置值
-func getVal(key string, defaultVal string) string {
+//GetVal 获取配置文件的字符串配置值
+func GetVal(key string, defaultVal string) string {
 	if viper.IsSet(key) {
 		return viper.GetString(key)
 	}
 	return defaultVal
 }
 
-//getVal 获取配置文件的整形配置值
-func getIntVal(key string, defaultVal int) int {
+//GetIntVal 获取配置文件的整型配置值
+func GetIntVal(key string, defaultVal int) int {
 	if viper.IsSet(key) {
 		return viper.GetInt(key)
 	}

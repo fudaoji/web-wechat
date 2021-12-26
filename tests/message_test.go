@@ -10,21 +10,30 @@ type sendMsg struct {
 	// 送达人UserName
 	To string
 	// 消息类型
-	Type int
+	Type string
 	// 正文
 	Content string
 }
 
+//发送图片给好友
+func TestImgToFriend(t *testing.T) {
+	method, url := "POST", Apis["imgToFriend"]
+	img := "https://zyx.images.huihuiba.net/0-5b84f6adbded5.png"
+	username := "雨晨"
+	res := Request(method, url, sendMsg{To: username, Type: "image", Content: img})
+	fmt.Printf("%#v", res)
+}
+
 //发送消息给好友
-func TestMsgToUser(t *testing.T) {
-	method, url := "PUT", Apis["msgToUser"]
-	res := Request(method, url, sendMsg{To: "道集", Type: 1, Content: "hi"})
+func TestTextToFriend(t *testing.T) {
+	method, url := "POST", Apis["msgToFriend"]
+	res := Request(method, url, sendMsg{To: "道集", Type: "text", Content: "hi"})
 	fmt.Printf("%#v", res)
 }
 
 //发送消息给群聊
-func TestMsgToGroup(t *testing.T) {
-	method, url := "PUT", Apis["msgToGroup"]
-	res := Request(method, url, sendMsg{To: "有家、有爱", Type: 1, Content: "hi"})
+func TestTextToGroup(t *testing.T) {
+	method, url := "POST", Apis["msgToGroup"]
+	res := Request(method, url, sendMsg{To: "有家、有爱", Type: "text", Content: "hi"})
 	fmt.Printf("%#v", res)
 }

@@ -53,7 +53,7 @@ func SetFriendRemarkNameHandle(ctx *gin.Context) {
 		core.FailWithMessage("参数获取失败", ctx)
 		return
 	}
-	bot := getBot(ctx)
+	bot := GetCurBot(ctx)
 	// 获取登录用户
 	self, _ := bot.GetCurrentUser()
 	// 查找指定的好友
@@ -177,8 +177,8 @@ func GetGroupsListHandle(ctx *gin.Context) {
 	core.OkWithData(groupsResponse{Count: groups.Count(), Groups: groupList}, ctx)
 }
 
-//getBot 获取当前bot
-func getBot(ctx *gin.Context) *protocol.WechatBot {
+//GetBot 获取当前bot
+func GetCurBot(ctx *gin.Context) *protocol.WechatBot {
 	// 获取AppKey
 	appKey := ctx.Request.Header.Get("AppKey")
 	return global.GetBot(appKey)

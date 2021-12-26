@@ -1,9 +1,16 @@
 package controller
 
 import (
+	"fmt"
+	"os"
+	"path"
 	"web-wechat/core"
 	"web-wechat/global"
+	"web-wechat/protocol"
 
+	"github.com/fudaoji/go-utils"
+
+	"github.com/eatmoreapple/openwechat"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +22,39 @@ type sendMsgRes struct {
 	Type string `form:"type" json:"type"`
 	// 正文
 	Content string `form:"content" json:"content"`
+}
+
+// SendImgToFriend 向指定用户发图片
+func SendImgToFriend(ctx *gin.Context) {
+	// 取出请求参数
+	var res sendMsgRes
+	if err := ctx.ShouldBindJSON(&res); err != nil {
+		core.FailWithMessage("参数获取失败", ctx)
+		return
+	}
+
+	bot := GetCurBot(ctx)
+	friend, self := FindFriend(bot, res.To, ctx)
+	if friend == nil {
+		return
+	}
+
+	filename := path.Base(res.Content)
+	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
+	file, err := utils.FetchFile(res.Content, destPath, filename)
+	if err != nil {
+		core.FailWithMessage("拉取图片失败"+err.Error(), ctx)
+		return
+	}
+	defer os.Remove(destPath + filename)
+
+	// 发送消息
+	if _, err := friend.SendImage(file); err != nil {
+		fmt.Println(self.Uin)
+		core.FailWithMessage("发送图片失败"+err.Error(), ctx)
+		return
+	}
+	core.Ok(ctx)
 }
 
 // SendTextToFriend 向指定用户发消息
@@ -83,4 +123,21 @@ func SendTextToGroup(ctx *gin.Context) {
 		return
 	}
 	core.Ok(ctx)
+}
+
+//FindFriend 根据username获取好友
+func FindFriend(bot *protocol.WechatBot, username string, ctx *gin.Context) (*openwechat.Friend, *openwechat.Self) {
+	// 获取登录用户
+	self, _ := bot.GetCurrentUser()
+	// 查找指定的好友
+	friends, _ := self.Friends(true)
+	// 查询指定好友
+	//friendSearchResult := friends.SearchByUserName(1, username)
+	friendSearchResult := friends.SearchByNickName(1, username)
+	if friendSearchResult.Count() < 1 {
+		core.FailWithMessage("指定好友不存在", ctx)
+		return nil, self
+	}
+	// 取出好友
+	return friendSearchResult.First(), self
 }

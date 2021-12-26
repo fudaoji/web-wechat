@@ -14,6 +14,7 @@ require (
 )
 
 require (
+	github.com/fudaoji/go-utils v0.0.0-20211226121617-063dd2b057f3 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/spf13/viper v1.10.1
 	github.com/ugorji/go v1.2.6 // indirect
