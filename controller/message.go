@@ -132,8 +132,8 @@ func FindFriend(bot *protocol.WechatBot, username string, ctx *gin.Context) (*op
 	// 查找指定的好友
 	friends, _ := self.Friends(true)
 	// 查询指定好友
-	//friendSearchResult := friends.SearchByUserName(1, username)
-	friendSearchResult := friends.SearchByNickName(1, username)
+	friendSearchResult := friends.SearchByUserName(1, username)
+	//friendSearchResult := friends.SearchByNickName(1, username)
 	if friendSearchResult.Count() < 1 {
 		core.FailWithMessage("指定好友不存在", ctx)
 		return nil, self
