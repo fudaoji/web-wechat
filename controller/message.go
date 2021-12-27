@@ -36,6 +36,83 @@ type sendFileRes struct {
 	Filename string `form:"filename" json:"filename"`
 }
 
+// SendVideoToGroup 向指定群聊发视频
+func SendVideoToGroupHandle(ctx *gin.Context) {
+	// 取出请求参数
+	var res sendFileRes
+	if err := ctx.ShouldBindJSON(&res); err != nil {
+		core.FailWithMessage("参数获取失败", ctx)
+		return
+	}
+
+	bot := GetCurBot(ctx)
+	group, self := FindGroup(bot, res.To, ctx)
+	if group == nil {
+		return
+	}
+
+	var filename string
+	if len(res.Filename) > 0 {
+		filename = res.Filename
+	} else {
+		filename = path.Base(res.Content)
+	}
+
+	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
+	file, err := utils.FetchFile(res.Content, destPath, filename)
+	if err != nil {
+		core.FailWithMessage("拉取视频失败"+err.Error(), ctx)
+		return
+	}
+	defer os.Remove(destPath + filename)
+
+	// 发送消息
+	if _, err := group.SendVideo(file); err != nil {
+		fmt.Println(self.Uin)
+		core.FailWithMessage("发送视频失败"+err.Error(), ctx)
+		return
+	}
+	core.Ok(ctx)
+}
+
+// SendVideoToFriendHandle 向指定用户发video
+func SendVideoToFriendHandle(ctx *gin.Context) {
+	// 取出请求参数
+	var res sendFileRes
+	if err := ctx.ShouldBindJSON(&res); err != nil {
+		core.FailWithMessage("参数获取失败", ctx)
+		return
+	}
+
+	bot := GetCurBot(ctx)
+	friend, self := FindFriend(bot, res.To, ctx)
+	if friend == nil {
+		return
+	}
+
+	var filename string
+	if len(res.Filename) > 0 {
+		filename = res.Filename
+	} else {
+		filename = path.Base(res.Content)
+	}
+	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
+	file, err := utils.FetchFile(res.Content, destPath, filename)
+	if err != nil {
+		core.FailWithMessage("拉取文件失败"+err.Error(), ctx)
+		return
+	}
+	defer os.Remove(destPath + filename)
+
+	// 发送消息
+	if _, err := friend.SendVideo(file); err != nil {
+		fmt.Println(self.Uin)
+		core.FailWithMessage("发送视频失败"+err.Error(), ctx)
+		return
+	}
+	core.Ok(ctx)
+}
+
 // SendFileToGroup 向指定群聊发文件
 func SendFileToGroupHandle(ctx *gin.Context) {
 	// 取出请求参数

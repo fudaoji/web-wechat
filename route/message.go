@@ -10,6 +10,12 @@ import (
 func initMessageRoute(app *gin.Engine) {
 	group := app.Group("/message")
 
+	// 向指定群组发送视频消息
+	group.POST("/group/video", controller.SendVideoToGroupHandle)
+
+	// 向指定好友发送视频消息
+	group.POST("/user/video", controller.SendVideoToFriendHandle)
+
 	// 向指定群组发送图片消息
 	group.POST("/group/file", controller.SendFileToGroupHandle)
 
