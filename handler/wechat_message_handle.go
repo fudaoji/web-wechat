@@ -10,11 +10,11 @@ import (
 
 // 回调请求体
 type CallbackRes struct {
-	Appkey      string           `form:"appkey" json:"appkey"`
-	From        string           `form:"from" json:"from"`
-	Type        string           `form:"type" json:"type"`
-	Content     interface{}      `form:"content" json:"content"`
-	Useringroup *openwechat.User `form:"useringroup" json:"useringroup"`
+	Appkey      string      `json:"appkey"`
+	From        string      `json:"from"`
+	Type        string      `json:"type"`
+	Content     interface{} `json:"content"`
+	Useringroup string      `json:"useringroup"`
 }
 
 func HandleMessage(bot *openwechat.Bot) {
@@ -44,7 +44,6 @@ func HandleMessage(bot *openwechat.Bot) {
 
 //NotifyWebhook  通知客户端平台
 func NotifyWebhook(bot *openwechat.Bot, data *CallbackRes) {
-	//uuid, _ := bot.Caller.GetLoginUUID()
 	user, _ := bot.GetCurrentUser()
 	appkeyRecord := model.Appkey{Uin: user.Uin}
 	appkeyRecord.FindByUin()

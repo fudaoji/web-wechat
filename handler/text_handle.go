@@ -24,7 +24,7 @@ func textMessageHandle(ctx *openwechat.MessageContext) {
 		if ctx.IsSendByGroup() {
 			// 取出消息在群里面的发送者
 			senderInGroup, _ := ctx.SenderInGroup()
-			resp.Useringroup = senderInGroup
+			resp.Useringroup = senderInGroup.NickName + senderInGroup.UserName
 		}
 	}
 
