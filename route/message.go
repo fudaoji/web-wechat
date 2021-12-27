@@ -10,6 +10,9 @@ import (
 func initMessageRoute(app *gin.Engine) {
 	group := app.Group("/message")
 
+	// 向指定群组发送图片消息
+	group.POST("/group/img", controller.SendImgToGroupHandle)
+
 	// 向指定好友发送图片消息
 	group.POST("/user/img", controller.SendImgToFriendHandle)
 

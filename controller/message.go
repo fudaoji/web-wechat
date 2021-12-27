@@ -24,6 +24,39 @@ type sendMsgRes struct {
 	Content string `form:"content" json:"content"`
 }
 
+// SendImgToGroup 向指定群聊发图片
+func SendImgToGroupHandle(ctx *gin.Context) {
+	// 取出请求参数
+	var res sendMsgRes
+	if err := ctx.ShouldBindJSON(&res); err != nil {
+		core.FailWithMessage("参数获取失败", ctx)
+		return
+	}
+
+	bot := GetCurBot(ctx)
+	group, self := FindGroup(bot, res.To, ctx)
+	if group == nil {
+		return
+	}
+
+	filename := path.Base(res.Content)
+	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
+	file, err := utils.FetchFile(res.Content, destPath, filename)
+	if err != nil {
+		core.FailWithMessage("拉取图片失败"+err.Error(), ctx)
+		return
+	}
+	defer os.Remove(destPath + filename)
+
+	// 发送消息
+	if _, err := group.SendImage(file); err != nil {
+		fmt.Println(self.Uin)
+		core.FailWithMessage("发送图片失败"+err.Error(), ctx)
+		return
+	}
+	core.Ok(ctx)
+}
+
 // SendImgToFriend 向指定用户发图片
 func SendImgToFriendHandle(ctx *gin.Context) {
 	// 取出请求参数
@@ -140,4 +173,20 @@ func FindFriend(bot *protocol.WechatBot, username string, ctx *gin.Context) (*op
 	}
 	// 取出好友
 	return friendSearchResult.First(), self
+}
+
+//FindGroup 根据username获取群组
+func FindGroup(bot *protocol.WechatBot, username string, ctx *gin.Context) (*openwechat.Group, *openwechat.Self) {
+	// 获取登录用户
+	self, _ := bot.GetCurrentUser()
+	// 查找指定的好友
+	groups, _ := self.Groups(true)
+	// 查询指定好友
+	searchResult := groups.SearchByUserName(1, username)
+	if searchResult.Count() < 1 {
+		core.FailWithMessage("指定群组不存在", ctx)
+		return nil, self
+	}
+	// 取出数据
+	return searchResult.First(), self
 }
