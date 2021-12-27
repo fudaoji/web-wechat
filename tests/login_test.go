@@ -21,7 +21,7 @@ func TestGetLoginCode(t *testing.T) {
 
 func TestCheckLogin(t *testing.T) {
 	method, url := "POST", Apis["checklogin"]
-	res := Request(method, url, &loginRes{Webhook: "http://wxbot.oudewa.cn/home/onmessage/botCallback"})
+	res := Request(method, url, &loginRes{Webhook: "http://wxbot.oudewa.cn/admin/onmessage/botCallback"})
 	fmt.Printf("%#v", res)
 }
 

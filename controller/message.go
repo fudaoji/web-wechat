@@ -25,7 +25,7 @@ type sendMsgRes struct {
 }
 
 // SendImgToFriend 向指定用户发图片
-func SendImgToFriend(ctx *gin.Context) {
+func SendImgToFriendHandle(ctx *gin.Context) {
 	// 取出请求参数
 	var res sendMsgRes
 	if err := ctx.ShouldBindJSON(&res); err != nil {
@@ -58,7 +58,7 @@ func SendImgToFriend(ctx *gin.Context) {
 }
 
 // SendTextToFriend 向指定用户发消息
-func SendTextToFriend(ctx *gin.Context) {
+func SendTextToFriendHandle(ctx *gin.Context) {
 	// 取出请求参数
 	var res sendMsgRes
 	if err := ctx.ShouldBindJSON(&res); err != nil {
@@ -90,7 +90,7 @@ func SendTextToFriend(ctx *gin.Context) {
 }
 
 // SendTextToGroup 向指定群组发送消息
-func SendTextToGroup(ctx *gin.Context) {
+func SendTextToGroupHandle(ctx *gin.Context) {
 	// 取出请求参数
 	var res sendMsgRes
 	if err := ctx.ShouldBindJSON(&res); err != nil {

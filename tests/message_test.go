@@ -19,7 +19,7 @@ type sendMsg struct {
 func TestImgToFriend(t *testing.T) {
 	method, url := "POST", Apis["imgToFriend"]
 	img := "https://zyx.images.huihuiba.net/0-5b84f6adbded5.png"
-	username := "雨晨"
+	username := "@67822500676b2e82af69301bfa7e1c3df79f05e7c686238e6e47966d61a53fa6"
 	res := Request(method, url, sendMsg{To: username, Type: "image", Content: img})
 	fmt.Printf("%#v", res)
 }
