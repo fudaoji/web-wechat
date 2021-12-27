@@ -24,7 +24,73 @@ type sendMsgRes struct {
 	Content string `form:"content" json:"content"`
 }
 
-// SendImgToGroup 向指定群聊发图片
+// SendFileToGroup 向指定群聊发文件
+func SendFileToGroupHandle(ctx *gin.Context) {
+	// 取出请求参数
+	var res sendMsgRes
+	if err := ctx.ShouldBindJSON(&res); err != nil {
+		core.FailWithMessage("参数获取失败", ctx)
+		return
+	}
+
+	bot := GetCurBot(ctx)
+	group, self := FindGroup(bot, res.To, ctx)
+	if group == nil {
+		return
+	}
+
+	filename := path.Base(res.Content)
+	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
+	file, err := utils.FetchFile(res.Content, destPath, filename)
+	if err != nil {
+		core.FailWithMessage("拉取图片失败"+err.Error(), ctx)
+		return
+	}
+	defer os.Remove(destPath + filename)
+
+	// 发送消息
+	if _, err := group.SendFile(file); err != nil {
+		fmt.Println(self.Uin)
+		core.FailWithMessage("发送文件失败"+err.Error(), ctx)
+		return
+	}
+	core.Ok(ctx)
+}
+
+// SendFileToFriendHandle 向指定用户发文件
+func SendFileToFriendHandle(ctx *gin.Context) {
+	// 取出请求参数
+	var res sendMsgRes
+	if err := ctx.ShouldBindJSON(&res); err != nil {
+		core.FailWithMessage("参数获取失败", ctx)
+		return
+	}
+
+	bot := GetCurBot(ctx)
+	friend, self := FindFriend(bot, res.To, ctx)
+	if friend == nil {
+		return
+	}
+
+	filename := path.Base(res.Content)
+	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
+	file, err := utils.FetchFile(res.Content, destPath, filename)
+	if err != nil {
+		core.FailWithMessage("拉取图片失败"+err.Error(), ctx)
+		return
+	}
+	defer os.Remove(destPath + filename)
+
+	// 发送消息
+	if _, err := friend.SendFile(file); err != nil {
+		fmt.Println(self.Uin)
+		core.FailWithMessage("发送文件失败"+err.Error(), ctx)
+		return
+	}
+	core.Ok(ctx)
+}
+
+// SendImgToGroupHandle 向指定群聊发图片
 func SendImgToGroupHandle(ctx *gin.Context) {
 	// 取出请求参数
 	var res sendMsgRes
