@@ -24,10 +24,22 @@ type sendMsgRes struct {
 	Content string `form:"content" json:"content"`
 }
 
+// 发送文件请求体
+type sendFileRes struct {
+	// username
+	To string `form:"to" json:"to"`
+	// 消息类型
+	Type string `form:"type" json:"type"`
+	// 正文
+	Content string `form:"content" json:"content"`
+	// 文件名称
+	Filename string `form:"filename" json:"filename"`
+}
+
 // SendFileToGroup 向指定群聊发文件
 func SendFileToGroupHandle(ctx *gin.Context) {
 	// 取出请求参数
-	var res sendMsgRes
+	var res sendFileRes
 	if err := ctx.ShouldBindJSON(&res); err != nil {
 		core.FailWithMessage("参数获取失败", ctx)
 		return
@@ -39,7 +51,7 @@ func SendFileToGroupHandle(ctx *gin.Context) {
 		return
 	}
 
-	filename := path.Base(res.Content)
+	filename := res.Filename
 	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
 	file, err := utils.FetchFile(res.Content, destPath, filename)
 	if err != nil {
@@ -60,7 +72,7 @@ func SendFileToGroupHandle(ctx *gin.Context) {
 // SendFileToFriendHandle 向指定用户发文件
 func SendFileToFriendHandle(ctx *gin.Context) {
 	// 取出请求参数
-	var res sendMsgRes
+	var res sendFileRes
 	if err := ctx.ShouldBindJSON(&res); err != nil {
 		core.FailWithMessage("参数获取失败", ctx)
 		return
@@ -72,7 +84,7 @@ func SendFileToFriendHandle(ctx *gin.Context) {
 		return
 	}
 
-	filename := path.Base(res.Content)
+	filename := res.Filename
 	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
 	file, err := utils.FetchFile(res.Content, destPath, filename)
 	if err != nil {
