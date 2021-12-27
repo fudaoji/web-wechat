@@ -51,7 +51,13 @@ func SendFileToGroupHandle(ctx *gin.Context) {
 		return
 	}
 
-	filename := res.Filename
+	var filename string
+	if len(res.Filename) > 0 {
+		filename = res.Filename
+	} else {
+		filename = path.Base(res.Content)
+	}
+
 	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
 	file, err := utils.FetchFile(res.Content, destPath, filename)
 	if err != nil {
@@ -84,7 +90,12 @@ func SendFileToFriendHandle(ctx *gin.Context) {
 		return
 	}
 
-	filename := res.Filename
+	var filename string
+	if len(res.Filename) > 0 {
+		filename = res.Filename
+	} else {
+		filename = path.Base(res.Content)
+	}
 	destPath := fmt.Sprintf("%s%d/", core.GetVal("uploadpath", "./uploads/"), self.Uin)
 	file, err := utils.FetchFile(res.Content, destPath, filename)
 	if err != nil {
