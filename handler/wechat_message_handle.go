@@ -10,10 +10,11 @@ import (
 
 // 回调请求体
 type CallbackRes struct {
-	Appkey  string      `form:"appkey" json:"appkey"`
-	From    string      `form:"from" json:"from"`
-	Type    string      `form:"type" json:"type"`
-	Content interface{} `form:"content" json:"content"`
+	Appkey          string      `form:"appkey" json:"appkey"`
+	From            string      `form:"from" json:"from"`
+	Type            string      `form:"type" json:"type"`
+	Content         interface{} `form:"content" json:"content"`
+	Usernameingroup string      `form:"usernameingroup" json:"usernameingroup"`
 }
 
 func HandleMessage(bot *openwechat.Bot) {

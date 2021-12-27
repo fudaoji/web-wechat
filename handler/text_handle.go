@@ -18,13 +18,17 @@ func textMessageHandle(ctx *openwechat.MessageContext) {
 	logger.Log.Infof("[收到新文字消息] == 发信人：%v ==> 内容：%v", senderUser, ctx.Content)
 	msg := ctx.Message
 	bot := ctx.Bot
-	//user = bot.GetCurrentUser()
-	/* if senderUser == "傅道集" && msg.Content == "ping" {
-		user, _ := bot.GetCurrentUser()
-		msg.ReplyText(fmt.Sprintf("%s", user.Uin))
-	} */
-	NotifyWebhook(bot,
-		&CallbackRes{From: sender.UserName, Type: MSGTYPE_TEXT, Content: msg.Content})
+	var resp = CallbackRes{From: sender.UserName, Type: MSGTYPE_TEXT, Content: msg.Content}
+
+	if !ctx.IsSendBySelf() {
+		if ctx.IsSendByGroup() {
+			// 取出消息在群里面的发送者
+			senderInGroup, _ := ctx.SenderInGroup()
+			resp.Usernameingroup = senderInGroup.UserName
+		}
+	}
+
+	NotifyWebhook(bot, &resp)
 
 	//if !ctx.IsSendBySelf() {
 	//	sender, _ := ctx.Sender()
