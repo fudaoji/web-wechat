@@ -2,13 +2,13 @@ package handler
 
 import (
 	"encoding/xml"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"strings"
 	"web-wechat/logger"
 
 	"github.com/eatmoreapple/openwechat"
+)
+
+const (
+	MSGTYPE_EMOTICON string = "emoticon"
 )
 
 // EmoticonMessageData 表情包消息结构体
@@ -56,14 +56,24 @@ func emoticonMessageHandle(ctx *openwechat.MessageContext) {
 	// 取出发送者
 	sender, _ := ctx.Sender()
 	senderUser := sender.NickName
-	if ctx.IsSendByGroup() {
-		// 取出消息在群里面的发送者
-		senderInGroup, _ := ctx.SenderInGroup()
-		senderUser = fmt.Sprintf("%v[%v]", senderInGroup.NickName, senderUser)
+
+	logger.Log.Infof("[收到新文字消息] == 发信人：%v ==> 内容：%v", senderUser, ctx.Content)
+	msg := ctx.Message
+	bot := ctx.Bot
+	var resp = CallbackRes{From: sender.UserName, Type: MSGTYPE_EMOTICON, Content: msg.Content}
+
+	if !ctx.IsSendBySelf() {
+		if ctx.IsSendByGroup() {
+			// 取出消息在群里面的发送者
+			senderInGroup, _ := ctx.SenderInGroup()
+			resp.Useringroup = senderInGroup.NickName + senderInGroup.UserName
+		}
 	}
 
+	NotifyWebhook(bot, &resp)
+
 	// 判断消息是不是表情商店的，如果是，不支持解析
-	if !strings.Contains(ctx.Content, "<msg>") {
+	/* if !strings.Contains(ctx.Content, "<msg>") {
 		logger.Log.Debugf("原始数据: %v", ctx.Content)
 		logger.Log.Infof("[收到新表情包消息] == 发信人：%v ==> 内容：「收到了一个表情，请在手机上查看」", senderUser)
 	} else {
@@ -96,7 +106,7 @@ func emoticonMessageHandle(ctx *openwechat.MessageContext) {
 					fileName = fmt.Sprintf("%v/%v", uin, fileName)
 				}
 				// 上传文件(reader2解决上传空文件的BUG,因为http.Response.Body只允许读一次)
-				/* reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
+				reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
 				flag := oss.SaveToOss(reader2, contentType, fileName)
 				if flag {
 					fileUrl := fmt.Sprintf("https://%v/%v/%v", core.OssConfig.Endpoint, core.OssConfig.BucketName, fileName)
@@ -104,9 +114,9 @@ func emoticonMessageHandle(ctx *openwechat.MessageContext) {
 					ctx.Content = fileUrl
 				} else {
 					logger.Log.Error("表情包保存失败")
-				} */
+				}
 			}
 		}
-	}
+	} */
 	ctx.Next()
 }

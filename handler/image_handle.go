@@ -2,13 +2,13 @@ package handler
 
 import (
 	"encoding/xml"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"strings"
 	"web-wechat/logger"
 
 	"github.com/eatmoreapple/openwechat"
+)
+
+const (
+	MSGTYPE_IMAGE string = "image"
 )
 
 // ImageMessageData 图片消息结构体
@@ -38,6 +38,23 @@ type ImageMessageData struct {
 // 处理图片消息
 func imageMessageHandle(ctx *openwechat.MessageContext) {
 	sender, _ := ctx.Sender()
+	senderUser := sender.NickName
+
+	logger.Log.Infof("[收到新文字消息] == 发信人：%v ==> 内容：%v", senderUser, ctx.Content)
+	msg := ctx.Message
+	bot := ctx.Bot
+	var resp = CallbackRes{From: sender.UserName, Type: MSGTYPE_IMAGE, Content: msg.Content}
+
+	if !ctx.IsSendBySelf() {
+		if ctx.IsSendByGroup() {
+			// 取出消息在群里面的发送者
+			senderInGroup, _ := ctx.SenderInGroup()
+			resp.Useringroup = senderInGroup.NickName + senderInGroup.UserName
+		}
+	}
+
+	NotifyWebhook(bot, &resp)
+	/* sender, _ := ctx.Sender()
 	senderUser := sender.NickName
 	if ctx.IsSendByGroup() {
 		// 取出消息在群里面的发送者
@@ -77,7 +94,7 @@ func imageMessageHandle(ctx *openwechat.MessageContext) {
 		}
 
 		// 上传文件
-		/* reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
+		reader2 := ioutil.NopCloser(bytes.NewReader(imgFileByte))
 		flag := oss.SaveToOss(reader2, contentType, fileName)
 		if flag {
 			fileUrl := fmt.Sprintf("https://%v/%v/%v", core.OssConfig.Endpoint, core.OssConfig.BucketName, fileName)
@@ -85,7 +102,7 @@ func imageMessageHandle(ctx *openwechat.MessageContext) {
 			ctx.Content = fileUrl
 		} else {
 			logger.Log.Error("图片保存失败")
-		} */
-	}
+		}
+	} */
 	ctx.Next()
 }
